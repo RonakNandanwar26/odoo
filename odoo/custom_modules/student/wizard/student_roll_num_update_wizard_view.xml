@@ -1,0 +1,49 @@
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<odoo>
+    <data>
+    
+        <record id="student_roll_num_update_wizard_view_form" model="ir.ui.view">
+            <field name="name">student_roll_num_update_wizard_view_form</field>
+            <field name="model">student.roll.num.update.wizard</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="roll_num" />
+                        </group>
+                    
+                        <footer>
+                            <button string="Update Roll Number" type="object" name="update_roll_number" /> <!-- update_roll_number is an method in wizard model -->
+                            <button string="Cancel" special="cancel" class="btn btn-secondary" />
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="student_roll_num_update_action" model="ir.actions.act_window">
+            <field name="name">Student Roll Number Update </field>
+            <field name="res_model">student.roll.num.update.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>   <!-- new means pop up and current means it will open form in current screen by default current -->
+        </record>
+
+        <!-- make menu item in action menu in form view in gear option-->
+        <record id="student_roll_num_update_action_window" model="ir.actions.act_window">
+            <field name="name">Student Roll Number Update</field>
+            <field name="res_model" >student.roll.num.update.wizard</field>
+            <field name="view_mode" >form</field>
+            <field name="view_id" ref="student.student_roll_num_update_wizard_view_form"> </field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_student_profile"/> <!-- model_student_profile is studen model name -->
+            <field name="binding_view_types">list,form</field>  <!-- by adding list here it is not adding in list mode gear option in odoo 17-->
+        </record>
+        
+
+        <menuitem
+      id="student_roll_number_update"
+      name="Student Roll Num Update"
+      action="student_roll_num_update_action"
+      parent="student.student_profile_sub_menu" />   <!-- No work of this-->
+    </data>
+</odoo>

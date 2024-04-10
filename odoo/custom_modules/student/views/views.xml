@@ -1,0 +1,108 @@
+<odoo>
+  <data>
+    <!-- Search View -->
+    <record id="student_profile_view_search" model="ir.ui.view">
+      <field name="name">student.profile.view.search</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name" string="Student Name" filter_domain="[('name','ilike',self)]" />
+          <field name="bla_bla_num" string="Bla Bla Number" /> <!-- filter_domain is optional and if not used it takes by defaulrt above condition with specified name attribute-->
+          <!-- name attribute is useful when need to apply multiple condition for same field or filter -->
+        
+          <!-- TO add filter use filter tag-->
+          <filter name="name" string="Student Name like R" domain="[('name', 'ilike', 'R')]" />
+
+
+          <!-- Group By -->
+          <group name="Group By " string="Group By Name">
+            <filter name="Group By Name" string="Student Name" context="{'group_by': 'name'}" />
+            
+            <!-- can add more group by here -->
+          
+            <!-- Date Based filters -->
+          </group>
+
+          <!-- Records created today -->
+          <!-- <filter name="create_date" string="Records created Today" domain="[('create_date','>=',context_today().strftime('%Y-%m-%d'))]"/> Not working in odoo 17 -->
+        
+          <!-- Adding Search Panel Left side -->
+          <searchpanel> 
+            <!-- can be used only for selection and relational fields -->
+            <field name="school_id"
+                  icon="fa fa-filter"
+                  select = "multi"
+                  enable_counters="1" />
+          </searchpanel>
+ 
+        </search>
+      </field>
+    </record>
+
+    <record id="student.profile_view_tree" model="ir.ui.view">
+      <field name="name">student.profile.view.tree</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <!-- default number is use to add order, can add multiple orders like default_order="name, roll_number desc" -->
+        <!-- <tree editable="top" default_order="roll_number desc" decoration-success="id>1 and id&lt;6">  To add new records or make existing records editable-> 2 options top and bottom -->
+        <tree delete="0" create="0" >     <!-- To hide or show button add button name with 0 to hide and 1 to show-->
+          <!-- To add drag and drop feature  add sequence with widget handle-->
+          <field name="student_seq" widget='handle' /> <!--default order will disable drag and drop feature-->
+          <!-- To add style in data decoration tag is used-> decoration-bf=bold,decoration-it=italic  -->
+          <!-- To add color -> decoration-muted, decoration-danger, decoration-warning, decoration-primary, decoration-success also can add condition direct in tree view -->
+          <field name="name" widget="badge" decoration-primary="1"></field> <!-- BAdge can't be editable, generally use with Reference field, decoration-bf or other tags won't work with badg widget-->
+          
+          <!-- also can aggregate values -->
+          <field name="roll_number" sum="Total of Roll Number"></field> <!-- mostly used with the fields like money etc, also can use avg, after = whatever is written will shown when u hover the sum or average in UI-->
+          <field name="bla_bla_num" optional="hide"></field> <!-- To hide field use optional="hide" or show can be seen on UI using three dots-->
+          <!-- Add button with icon -->
+          <button name="tree_button_click" type="object" class="fa fa-handshake-o" ></button> <!-- if wnt to add string can be added, button class can be get from font awesome 4.7 site-->
+        </tree>
+      </field>
+    </record>  
+
+    <record id="student.profile_view_form" model="ir.ui.view">
+      <field name="name">student.profile.view.form</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <button name="wiz_open" string="Wiz open using custom method" type="object" />  <!-- wiz_open is custom method in model file -->
+            <button name="student.student_roll_num_update_action" string="Wiz open using action" type="action" />  <!-- open wizard using action -->
+            <group>
+              <field name="name"></field>
+              <field name="school_id" ></field>
+              <field name="bla_bla_num"></field>
+              <field name="roll_number"  required="school_id != 'Jay Somnath'"></field>    <!-- attrs is used to make field readonly, required or invisble based on other attributes -->
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="student_profile_action" model="ir.actions.act_window">
+      <field name="name">Student Profile</field>
+      <field name="res_model">student.profile</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <!-- function calling from xml file, value tag used to pass arguement -->
+    <function model="student.profile" name="add_bla_bla_num" > 
+      <value>blast</value>
+      <value>blast2</value>
+    </function>
+
+    <menuitem
+      id="student_profile_root_menu"
+      name="Student" />
+    <menuitem
+      id="student_profile_sub_menu"
+      name="Student Profile"
+      parent="student_profile_root_menu" />
+    <menuitem
+      id="student_profile_menu"
+      name="Student Data"
+      action="student_profile_action"
+      parent="student_profile_sub_menu" />
+
+  </data>
+</odoo>

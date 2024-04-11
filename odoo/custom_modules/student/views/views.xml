@@ -66,24 +66,180 @@
       <field name="model">student.profile</field>
       <field name="arch" type="xml">
         <form>
+          <header>
+            <button name="tree_button_click" string="Click me!" type="object" class="btn-primary" ></button>
+            <!-- To show status bar --> 
+            <field name="status" widget="statusbar" statusbar_visible="admitted,left" options="{'clickable':1}" /> <!-- statusbar_visible will only show those fields that are mentioned. If statusbar_visible param is not mentioned all fields will be visible-->
+            </header>
           <sheet>
             <button name="wiz_open" string="Wiz open using custom method" type="object" />  <!-- wiz_open is custom method in model file -->
             <button name="student.student_roll_num_update_action" string="Wiz open using action" type="action" />  <!-- open wizard using action -->
-            <group>
-              <field name="name"></field>
-              <field name="school_id" ></field>
-              <field name="bla_bla_num"></field>
-              <field name="roll_number"  required="school_id != 'Jay Somnath'"></field>    <!-- attrs is used to make field readonly, required or invisble based on other attributes -->
-            </group>
+            <notebook>
+              <page string="Student Profile">
+                <group>
+                  <group>
+                    <field name="student_img" class="oe_avatar" widget="image" />
+                  </group>
+                </group>
+                  <group string="Student Form">
+                  <group string="Left side Up"> <!-- Left side-->
+                    <field name="name"></field>
+                    <field name="school_id" ></field>
+                    <field name="bla_bla_num"></field>
+                    <field name="roll_number"  required="school_id != 'Jay Somnath'"></field>    <!-- attrs is used to make field readonly, required or invisble based on other attributes -->
+                  </group>
+                  <group string="Right side Up"> <!-- Right side-->
+                    <field name="name"></field>
+                    <field name="school_id" ></field>
+                    <field name="bla_bla_num"></field>
+                    <field name="roll_number"  required="school_id != 'Jay Somnath'"></field>    <!-- attrs is used to make field readonly, required or invisble based on other attributes -->
+                  </group>  
+                </group> 
+                <group name="name" string="Left Bottom">
+                  <field name="name"></field>
+                    <field name="school_id" ></field>
+                    <field name="bla_bla_num"></field>
+                    <field name="roll_number"  required="school_id != 'Jay Somnath'"></field>    <!-- attrs is used to make field readonly, required or invisble based on other attributes -->
+                </group>   
+              </page>
+              <page name="name" string="Maje karo">
+                <group>
+                  <group>
+
+                  </group>
+                  <group  string="Right side Up">
+                    <field name="name"></field>
+                    <field name="school_id" ></field>
+                    <field name="bla_bla_num"></field>
+                    <field name="roll_number"  required="school_id != 'Jay Somnath'"></field>    <!-- attrs is used to make field readonly, required or invisble based on other attributes -->
+                  </group>
+                </group>
+              </page>
+            </notebook>
           </sheet>
         </form>
       </field>
     </record>
 
+
+    <record id="student.profile_view_kanban" model="ir.ui.view">
+      <field name="name">student.profile.view.kanban</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <kanban > <!-- records_draggable="0" add to disable drag and drop-->
+          <field name="name"></field>
+          <field name="school_id" ></field>
+          <field name="bla_bla_num"></field>
+          <!-- <field name="status" readonly="1"></field>   To disable kanban drag and drop -->
+          <templates>
+            <t t-name="kanban-box">
+              <div class="oe_kanban_global_click o_kanban-record_has_image_fill">  <!-- To make kanban card clickable and add image-->
+                <div class="o_kanban_image d-none d-md-block">
+                      <!-- t-attf-style="background-image:url('#{kanban_image('student.profile','student_img','record.id.raw_value')}')"> -->
+                      <img class="o_kanban_image d-none d-md-block" t-att-src="kanban_image('student.profile', 'student_img', record.id.raw_value)" alt="image" />
+                </div>
+                <div class="oe_kanban_details d-flex flex-column">
+                  <strong><field name="name"></field></strong>
+                  <ul>
+                    <li> <field name="school_id" ></field></li>
+                    <li><field name="bla_bla_num"></field></li>
+                      <!-- <span t-esc="record.name.raw_value"/>
+                      <span t-esc="record.school_id.raw_value"/>
+                      <span t-esc="record.bla_bla_num.raw_value"/> -->
+                  </ul>
+                </div>
+              </div>    
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+    
+    <!-- Calendar View -->
+    <record id="student.profile_view_calendar" model="ir.ui.view">
+      <field name="name">student.profile.view.calendar</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <calendar string="" date_start="create_date" mode="month">
+          <field name="name" />
+        </calendar>
+      </field>
+    </record>
+
+    <!-- Graph view -->
+    <record id="student.profile_view_graph" model="ir.ui.view">
+      <field name="name">student.profile.view.graph</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <graph string="" type="bar">    <!-- type can be bar, line , pie and whatever specified in type will be default-->
+          <!-- if stacked="False" is used in graph attr bar graph will not be stacked -->
+          <!-- If date is in field can use interval=day,week,month,quarter, year as param -->
+          <!-- if disable_linking="1" then onclick of graph it won't redirect to particular record -->
+          <!-- if type="measure is added in any field that field will be by default measure." -->
+          <field name="school_id" />
+          <field name="roll_number" />
+        </graph>
+      </field>
+    </record>
+    
+    <!-- Pivot Table -->
+    <record id="student.profile_view_pivot" model="ir.ui.view">
+      <field name="name">student.profile.view.pivot</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <pivot string="" disable_linking="true">
+            <field name="name" type="row" />
+            <field name="roll_number" type="col" />
+            <!--  if there is date field can use interval as graph -->
+            <!-- also to add default measure can use type="measure" here like graph -->
+          </pivot>
+      </field>
+    </record>
+
+    <!-- cohort view (available in enterprice version) -->
+    <!-- <record id="student.profile_view_cohort" model="ir.ui.view">
+      <field name="name">student.profile.view.cohort</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <cohort string="" date_start="create_date" date_stop="create_date">
+        </cohort>
+      </field>
+    </record> -->
+
+    <!-- Gantt View (available in enterprise version) -->
+    <!-- <record id="student.profile_view_gantt" model="ir.ui.view">
+      <field name="name">student.profile.view.gantt</field>
+      <field name="model">student.profile</field>
+      <field name="arch" type="xml">
+        <gantt string=""
+              color = "id"  disable_drag_drop="1"  
+              date_start="create_date" date_stop="create_date"
+              default-scale="week"
+              scales="day,week,month,quarter,year"
+              decoration-danger="status=='admitted'"
+              default_group_by="school_id">
+          <field name="name" />
+          <field name="status" />
+          <templates>
+            <div t-name="gantt-popover">
+              <ul class="pl-1 mb-0 list-unstyled">
+                <li><strong>create Date:</strong><t t-esc="create_date" /></li>
+                <li><strong>Status:</strong><t t-esc="status"></t></li>
+                <li><strong>Roll Number:</strong><t t-esc="roll_number"></t></li>
+              </ul>
+            </div>
+          </templates>
+        
+        </gantt>
+      </field>
+    </record> -->
+
     <record id="student_profile_action" model="ir.actions.act_window">
       <field name="name">Student Profile</field>
       <field name="res_model">student.profile</field>
-      <field name="view_mode">tree,form</field>
+      <!-- <field name="context">{'group_by':'status'}</field> -->
+      <field name="view_mode">pivot,calendar,kanban,graph,tree,form</field>
+      
     </record>
     <!-- function calling from xml file, value tag used to pass arguement -->
     <function model="student.profile" name="add_bla_bla_num" > 

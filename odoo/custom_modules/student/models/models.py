@@ -7,7 +7,7 @@ from odoo.exceptions import UserError
 class Student(models.Model):
     _name = 'student.profile'
     _description = 'Student Profile'
-    _log_access = False   ## it will not update crete and write details in database, if added in new model it will not crate those 4 columns
+    _log_access = True   ## if False it will not update crete and write details in database, if added in new model it will not crate those 4 columns
     # _table = 'Student_Profile'   # using this name odoo will create table
 
     # To add drag and drop feature in tree view, need to add one sequence, if there is order by set in model level then order by will override 
@@ -15,9 +15,13 @@ class Student(models.Model):
     student_seq = fields.Integer()
 
     name = fields.Char() 
+    student_img = fields.Image("Student Image")
     school_id = fields.Many2one('school.profile', string="School")
     roll_number = fields.Integer()
     bla_bla_num = fields.Char()
+    status = fields.Selection([('enrolled','Enrolled'),
+                               ('admitted','Admitted'),
+                               ('left','Left')])
 
     # _sql_constraints handle validation on sql level and give message specified if any constraint is failed
     _sql_constraints = [
